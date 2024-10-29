@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'buttons.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -146,6 +147,35 @@ class _HomePageState extends State<HomePage> {
                       textColor: Colors.black,
                     );
                   }
+
+                  // Equal_to Button
+                  else if (index == 18) {
+                    return MyButton(
+                      buttonText: buttons[index],
+                      buttontapped: () {
+                        setState(() {
+                          equalPressed();
+                        });
+                      },
+                    );
+                  }
+
+                  else {
+                    return MyButton(
+                      buttonText: buttons[index],
+                      buttontapped: () {
+                        setState(() {
+                          userInput += buttons[index];
+                        });
+                      },
+                      color: isOperator(buttons[index])
+                        ? Colors.blueAccent
+                        : Colors.white,
+                      textColor: isOperator(buttons[index])
+                        ? Colors.white
+                        : Colors.black,
+                    );
+                  }
                 },
               ),
             ),
@@ -153,5 +183,24 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  bool isOperator(String x) {
+    if (x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') {
+      return true;
+    }
+    return false;
+  }
+
+  // function to calculate the input operation
+  void equalPressed() {
+    String finaluserinput = userInput;
+    finaluserinput = userInput.replaceAll('x', '*');
+
+    Parser p = Parser();
+    Expression exp = p.parse(finaluserinput);
+    ContextModel cm = ContextModel();
+    double eval = exp.evaluate(EvaluationType.REAL, cm);
+    answer = eval.toString();
   }
 }
